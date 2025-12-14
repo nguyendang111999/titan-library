@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
+      }
+    },
+    "books": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
+    },
+    "borrowRecords": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

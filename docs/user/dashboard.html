@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Titan Library</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>📚 Titan Library</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="books.html">Browse Books</a></li>
+            <li><a href="my-borrows.html">My Borrows</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="userName">User</span>
+          <button class="btn btn-secondary" id="changePasswordBtn">Change Password</button>
+          <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>Welcome to Titan Library</h1>
+        <p>Browse and borrow books from our collection</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>📖 Available Books</h3>
+          <div class="number" style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin: 1rem 0;" id="availableBooks">0</div>
+          <p style="color: var(--secondary-color);">Books ready to borrow</p>
+          <a href="books.html" class="btn btn-primary mt-2" style="width: 100%;">Browse Books</a>
+        </div>
+
+        <div class="card">
+          <h3>📚 My Active Borrows</h3>
+          <div class="number" style="font-size: 2rem; font-weight: bold; color: var(--success-color); margin: 1rem 0;" id="activeBorrows">0</div>
+          <p style="color: var(--secondary-color);">Currently borrowed</p>
+          <a href="my-borrows.html" class="btn btn-primary mt-2" style="width: 100%;">View Borrows</a>
+        </div>
+
+        <div class="card">
+          <h3>⏳ Pending Requests</h3>
+          <div class="number" style="font-size: 2rem; font-weight: bold; color: var(--warning-color); margin: 1rem 0;" id="pendingRequests">0</div>
+          <p style="color: var(--secondary-color);">Awaiting confirmation</p>
+          <a href="my-borrows.html" class="btn btn-primary mt-2" style="width: 100%;">View Requests</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="quick-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="books.html" class="btn btn-primary">Browse All Books</a>
+          <a href="my-borrows.html" class="btn btn-outline">View My Borrow History</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Change Password</h3>
+        <button class="close-modal" id="closePasswordModal">&times;</button>
+      </div>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" required minlength="6" placeholder="Enter new password (min 6 characters)">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" required minlength="6" placeholder="Confirm new password">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Update Password</button>
+          <button type="button" class="btn btn-secondary" id="cancelPasswordBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { checkAuth, logout, changePassword } from '../js/auth.js';
+    import { database } from '../js/firebase-config.js';
+    import { ref, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    let currentUser = null;
+
+    // Check authentication
+    checkAuth('user').then(({ user, userData }) => {
+      currentUser = user;
+      document.getElementById('userName').textContent = userData.username || userData.email;
+      loadDashboardData();
+    }).catch((error) => {
+      console.error('Auth error:', error);
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Change password modal
+    const changePasswordModal = document.getElementById('changePasswordModal');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const closePasswordModal = document.getElementById('closePasswordModal');
+    const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const alertDiv = document.getElementById('alert');
+
+    changePasswordBtn.addEventListener('click', () => {
+      changePasswordModal.classList.add('show');
+    });
+
+    closePasswordModal.addEventListener('click', () => {
+      changePasswordModal.classList.remove('show');
+      changePasswordForm.reset();
+    });
+
+    cancelPasswordBtn.addEventListener('click', () => {
+      changePasswordModal.classList.remove('show');
+      changePasswordForm.reset();
+    });
+
+    changePasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (newPassword !== confirmPassword) {
+        showAlert('Passwords do not match', 'error');
+        return;
+      }
+      
+      try {
+        await changePassword(newPassword);
+        showAlert('Password updated successfully!', 'success');
+        changePasswordModal.classList.remove('show');
+        changePasswordForm.reset();
+      } catch (error) {
+        console.error('Change password error:', error);
+        showAlert('Failed to update password: ' + error.message, 'error');
+      }
+    });
+
+    function showAlert(message, type) {
+      alertDiv.textContent = message;
+      alertDiv.className = `alert alert-${type} show`;
+      setTimeout(() => {
+        alertDiv.className = 'alert';
+      }, 5000);
+    }
+
+    async function loadDashboardData() {
+      try {
+        // Load available books
+        const booksRef = ref(database, 'books');
+        const booksSnapshot = await get(booksRef);
+        
+        let availableBooks = 0;
+        if (booksSnapshot.exists()) {
+          const books = booksSnapshot.val();
+          Object.values(books).forEach(book => {
+            availableBooks += book.availableCopies || 0;
+          });
+        }
+        document.getElementById('availableBooks').textContent = availableBooks;
+        
+        // Load user's borrows
+        const borrowsRef = ref(database, 'borrowRecords');
+        const borrowsSnapshot = await get(borrowsRef);
+        
+        let activeBorrows = 0;
+        let pendingRequests = 0;
+        
+        if (borrowsSnapshot.exists()) {
+          const borrows = borrowsSnapshot.val();
+          Object.values(borrows).forEach(borrow => {
+            if (borrow.userId === currentUser.uid) {
+              if (borrow.status === 'borrowed') {
+                activeBorrows++;
+              } else if (borrow.status === 'pending_borrow' || borrow.status === 'pending_return') {
+                pendingRequests++;
+              }
+            }
+          });
+        }
+        
+        document.getElementById('activeBorrows').textContent = activeBorrows;
+        document.getElementById('pendingRequests').textContent = pendingRequests;
+        
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    }
+  </script>
+</body>
+</html>

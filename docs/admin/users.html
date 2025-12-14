@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Titan Library</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>📚 Titan Library - Admin</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="books.html">Books</a></li>
+            <li><a href="borrow-requests.html">Requests</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="adminName">Admin</span>
+          <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>User Management</h1>
+        <p>Manage library members</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Users</h3>
+          <button class="btn btn-primary" id="addUserBtn">Add New User</button>
+        </div>
+        
+        <div class="search-filter">
+          <input type="text" id="searchInput" placeholder="Search by name or email...">
+        </div>
+
+        <div class="table-container">
+          <div class="loading show" id="loading">
+            <div class="spinner"></div>
+            <p>Loading users...</p>
+          </div>
+          <div id="usersTable"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add User Modal -->
+  <div id="addUserModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New User</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <form id="addUserForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required minlength="6" placeholder="Enter password (min 6 characters)">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Create User</button>
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="../js/admin/users.js"></script>
+</body>
+</html>
