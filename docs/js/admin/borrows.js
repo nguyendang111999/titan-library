@@ -263,7 +263,7 @@ window.rejectBorrow = async function(recordId) {
     }
     
     // Delete the record
-    await set(recordRef, null);
+    await remove(recordRef);
     
     showAlert('Borrow request rejected', 'info');
     loadRequests();

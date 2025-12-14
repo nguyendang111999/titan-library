@@ -253,7 +253,7 @@ window.deleteBook = async function(bookId, bookTitle) {
     if (borrowsSnapshot.exists()) {
       const borrows = borrowsSnapshot.val();
       const activeBorrows = Object.values(borrows).filter(
-        borrow => borrow.bookId === bookId && (borrow.status === 'borrowed' || borrow.status === 'pending_borrow')
+        borrow => borrow.bookId === bookId && (borrow.status === 'borrowed' || borrow.status === 'pending_borrow' || borrow.status === 'pending_return')
       );
       
       if (activeBorrows.length > 0) {

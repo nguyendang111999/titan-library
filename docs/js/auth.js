@@ -15,8 +15,12 @@ export function checkAuth(requiredRole = null) {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         // Not logged in
-        if (window.location.pathname !== '/index.html' && !window.location.pathname.endsWith('/')) {
-          window.location.href = '/index.html';
+        const currentPath = window.location.pathname;
+        if (!currentPath.endsWith('index.html') && !currentPath.endsWith('/')) {
+          // Get the base path (for GitHub Pages deployment)
+          const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+          const rootPath = basePath.includes('/admin') || basePath.includes('/user') ? '../index.html' : 'index.html';
+          window.location.href = rootPath;
         }
         reject('Not authenticated');
       } else {
@@ -29,8 +33,11 @@ export function checkAuth(requiredRole = null) {
             const userData = snapshot.val();
             
             if (requiredRole && userData.role !== requiredRole) {
-              // Wrong role
-              window.location.href = '/index.html';
+              // Wrong role - redirect to login
+              const currentPath = window.location.pathname;
+              const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+              const rootPath = basePath.includes('/admin') || basePath.includes('/user') ? '../index.html' : 'index.html';
+              window.location.href = rootPath;
               reject('Insufficient permissions');
             } else {
               resolve({ user, userData });
@@ -38,7 +45,10 @@ export function checkAuth(requiredRole = null) {
           } else {
             // User data not found
             await signOut(auth);
-            window.location.href = '/index.html';
+            const currentPath = window.location.pathname;
+            const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            const rootPath = basePath.includes('/admin') || basePath.includes('/user') ? '../index.html' : 'index.html';
+            window.location.href = rootPath;
             reject('User data not found');
           }
         } catch (error) {
@@ -76,7 +86,11 @@ export async function login(email, password) {
 export async function logout() {
   try {
     await signOut(auth);
-    window.location.href = '/index.html';
+    // Use relative path for GitHub Pages compatibility
+    const currentPath = window.location.pathname;
+    const basePath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    const rootPath = basePath.includes('/admin') || basePath.includes('/user') ? '../index.html' : 'index.html';
+    window.location.href = rootPath;
   } catch (error) {
     console.error('Logout error:', error);
     throw error;

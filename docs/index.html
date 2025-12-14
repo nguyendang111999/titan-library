@@ -55,9 +55,9 @@
         try {
           const { userData } = await import('./js/auth.js').then(m => m.checkAuth());
           if (userData.role === 'admin') {
-            window.location.href = '/admin/dashboard.html';
+            window.location.href = 'admin/dashboard.html';
           } else {
-            window.location.href = '/user/dashboard.html';
+            window.location.href = 'user/dashboard.html';
           }
         } catch (error) {
           console.log('Not authenticated yet');
@@ -89,9 +89,9 @@
         
         // Redirect based on role
         if (result.role === 'admin') {
-          window.location.href = '/admin/dashboard.html';
+          window.location.href = 'admin/dashboard.html';
         } else {
-          window.location.href = '/user/dashboard.html';
+          window.location.href = 'user/dashboard.html';
         }
       } catch (error) {
         loginForm.style.display = 'block';
