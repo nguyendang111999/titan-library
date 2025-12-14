@@ -1,0 +1,79 @@
+{
+  "users": {
+    "userId1": {
+      "username": "john_doe",
+      "email": "john@company.com",
+      "role": "user",
+      "createdAt": "2025-12-14T10:00:00Z"
+    },
+    "adminUserId": {
+      "username": "admin",
+      "email": "admin@company.com",
+      "role": "admin",
+      "createdAt": "2025-12-14T08:00:00Z"
+    }
+  },
+  "books": {
+    "bookId1": {
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "isbn": "978-0132350884",
+      "category": "Programming",
+      "description": "A handbook of agile software craftsmanship",
+      "totalCopies": 3,
+      "availableCopies": 2,
+      "coverImage": "",
+      "addedAt": "2025-12-14T08:00:00Z",
+      "addedBy": "adminUserId",
+      "lastModified": "2025-12-14T08:00:00Z"
+    },
+    "bookId2": {
+      "title": "The Pragmatic Programmer",
+      "author": "Andrew Hunt and David Thomas",
+      "isbn": "978-0201616224",
+      "category": "Programming",
+      "description": "Your journey to mastery",
+      "totalCopies": 2,
+      "availableCopies": 2,
+      "coverImage": "",
+      "addedAt": "2025-12-14T08:00:00Z",
+      "addedBy": "adminUserId",
+      "lastModified": "2025-12-14T08:00:00Z"
+    }
+  },
+  "borrowRecords": {
+    "recordId1": {
+      "userId": "userId1",
+      "bookId": "bookId1",
+      "bookTitle": "Clean Code",
+      "userName": "john_doe",
+      "borrowDate": "2025-12-10T14:00:00Z",
+      "returnDate": null,
+      "status": "pending_borrow",
+      "confirmedBy": null,
+      "confirmedAt": null
+    },
+    "recordId2": {
+      "userId": "userId1",
+      "bookId": "bookId2",
+      "bookTitle": "The Pragmatic Programmer",
+      "userName": "john_doe",
+      "borrowDate": "2025-12-08T10:00:00Z",
+      "returnDate": null,
+      "status": "borrowed",
+      "confirmedBy": "adminUserId",
+      "confirmedAt": "2025-12-08T11:00:00Z"
+    },
+    "recordId3": {
+      "userId": "userId1",
+      "bookId": "bookId1",
+      "bookTitle": "Clean Code",
+      "userName": "john_doe",
+      "borrowDate": "2025-12-01T09:00:00Z",
+      "returnDate": "2025-12-07T16:00:00Z",
+      "status": "returned",
+      "confirmedBy": "adminUserId",
+      "confirmedAt": "2025-12-01T10:00:00Z"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Borrows - Titan Library</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>📚 Titan Library</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="books.html">Browse Books</a></li>
+            <li><a href="my-borrows.html">My Borrows</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="userName">User</span>
+          <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>My Borrow History</h1>
+        <p>View your borrowed books and history</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <!-- Active Borrows -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Currently Borrowed</h3>
+          <span class="badge badge-info" id="activeCount">0</span>
+        </div>
+        <div class="loading show" id="activeLoading">
+          <div class="spinner"></div>
+          <p>Loading borrows...</p>
+        </div>
+        <div id="activeBorrows"></div>
+      </div>
+
+      <!-- Pending Requests -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Pending Requests</h3>
+          <span class="badge badge-warning" id="pendingCount">0</span>
+        </div>
+        <div class="loading show" id="pendingLoading">
+          <div class="spinner"></div>
+          <p>Loading requests...</p>
+        </div>
+        <div id="pendingRequests"></div>
+      </div>
+
+      <!-- History -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Borrow History</h3>
+        </div>
+        <div class="loading show" id="historyLoading">
+          <div class="spinner"></div>
+          <p>Loading history...</p>
+        </div>
+        <div id="borrowHistory"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../js/user/borrows.js"></script>
+</body>
+</html>

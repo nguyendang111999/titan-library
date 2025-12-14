@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Books - Titan Library</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>📚 Titan Library</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="books.html">Browse Books</a></li>
+            <li><a href="my-borrows.html">My Borrows</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="userName">User</span>
+          <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>Browse Books</h1>
+        <p>Find and borrow books from our collection</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <div class="card">
+        <div class="search-filter">
+          <input type="text" id="searchInput" placeholder="Search by title, author, or ISBN...">
+          <select id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Programming">Programming</option>
+            <option value="Science">Science</option>
+            <option value="Business">Business</option>
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+            <option value="History">History</option>
+            <option value="Biography">Biography</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="loading show" id="loading">
+          <div class="spinner"></div>
+          <p>Loading books...</p>
+        </div>
+        
+        <div id="booksGrid" class="grid grid-3"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../js/user/books.js"></script>
+</body>
+</html>

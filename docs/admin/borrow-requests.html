@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Borrow Requests - Titan Library</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <h1>📚 Titan Library - Admin</h1>
+        </div>
+        <nav>
+          <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="users.html">Users</a></li>
+            <li><a href="books.html">Books</a></li>
+            <li><a href="borrow-requests.html">Requests</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="adminName">Admin</span>
+          <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1>Borrow & Return Requests</h1>
+        <p>Manage book borrow and return requests</p>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <!-- Pending Borrow Requests -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Pending Borrow Requests</h3>
+          <span class="badge badge-warning" id="borrowCount">0</span>
+        </div>
+        <div class="loading show" id="borrowLoading">
+          <div class="spinner"></div>
+          <p>Loading requests...</p>
+        </div>
+        <div id="borrowRequests"></div>
+      </div>
+
+      <!-- Pending Return Requests -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Pending Return Requests</h3>
+          <span class="badge badge-warning" id="returnCount">0</span>
+        </div>
+        <div class="loading show" id="returnLoading">
+          <div class="spinner"></div>
+          <p>Loading requests...</p>
+        </div>
+        <div id="returnRequests"></div>
+      </div>
+
+      <!-- Active Borrows -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Active Borrows</h3>
+          <span class="badge badge-info" id="activeCount">0</span>
+        </div>
+        <div class="loading show" id="activeLoading">
+          <div class="spinner"></div>
+          <p>Loading borrows...</p>
+        </div>
+        <div id="activeBorrows"></div>
+      </div>
+
+      <!-- Completed Returns -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Returns</h3>
+        </div>
+        <div class="loading show" id="completedLoading">
+          <div class="spinner"></div>
+          <p>Loading returns...</p>
+        </div>
+        <div id="completedReturns"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../js/admin/borrows.js"></script>
+</body>
+</html>
