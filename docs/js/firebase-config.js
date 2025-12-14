@@ -13,13 +13,13 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB3lDzNlKgZz_jvm4sNfFMlVBYMvWDVLsY",
+  authDomain: "titan-library.firebaseapp.com",
+  databaseURL: "https://titan-library-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "titan-library",
+  storageBucket: "titan-library.firebasestorage.app",
+  messagingSenderId: "162652688166",
+  appId: "1:162652688166:web:9c11f63c9dd42257c7bbe7"
 };
 
 // Initialize Firebase
