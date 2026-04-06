@@ -1,7 +1,7 @@
 // User Borrow History
 import { checkAuth, logout } from '../auth.js';
 import { database } from '../firebase-config.js';
-import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { ref, get, update, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 let currentUser = null;
 
@@ -49,7 +49,7 @@ async function loadBorrows() {
     
     // Separate by status
     const active = userBorrows.filter(b => b.status === 'borrowed');
-    const pending = userBorrows.filter(b => b.status === 'pending_borrow' || b.status === 'pending_return');
+    const pending = userBorrows.filter(b => b.status === 'pending_borrow');
     const history = userBorrows.filter(b => b.status === 'returned')
       .sort((a, b) => new Date(b.returnDate) - new Date(a.returnDate));
     
@@ -106,7 +106,7 @@ function renderActiveBorrows(borrows) {
           <td>${new Date(borrow.confirmedAt).toLocaleDateString()}</td>
           <td><span class="badge badge-info">Borrowed</span></td>
           <td>
-            <button class="btn btn-warning" onclick="requestReturn('${borrow.id}')">Request Return</button>
+            <button class="btn btn-warning" onclick="requestReturn('${borrow.id}')">Return Book</button>
           </td>
         </tr>
       `).join('')}
@@ -140,9 +140,7 @@ function renderPendingRequests(requests) {
           <td><strong>${request.bookTitle}</strong></td>
           <td>${new Date(request.borrowDate).toLocaleDateString()}</td>
           <td>
-            <span class="badge badge-warning">
-              ${request.status === 'pending_borrow' ? 'Pending Borrow' : 'Pending Return'}
-            </span>
+            <span class="badge badge-warning">Pending Borrow</span>
           </td>
         </tr>
       `).join('')}
@@ -189,21 +187,58 @@ function renderHistory(history) {
 
 // Make function global for onclick handler
 window.requestReturn = async function(recordId) {
-  if (!confirm('Do you want to request to return this book?')) {
+  if (!confirm('Do you want to return this book?')) {
     return;
   }
   
   try {
+    // Fetch the borrow record to get bookId and details
     const recordRef = ref(database, `borrowRecords/${recordId}`);
+    const recordSnapshot = await get(recordRef);
+    
+    if (!recordSnapshot.exists()) {
+      showAlert('Borrow record not found', 'error');
+      return;
+    }
+    
+    const record = recordSnapshot.val();
+    const returnDate = new Date().toISOString();
+    
+    // Mark as returned immediately
     await update(recordRef, {
-      status: 'pending_return'
+      status: 'returned',
+      returnDate: returnDate
     });
     
-    showAlert('Return request submitted! Waiting for admin confirmation.', 'success');
+    // Increment available copies
+    const bookRef = ref(database, `books/${record.bookId}`);
+    const bookSnapshot = await get(bookRef);
+    
+    if (bookSnapshot.exists()) {
+      const book = bookSnapshot.val();
+      await update(bookRef, {
+        availableCopies: book.availableCopies + 1
+      });
+    }
+    
+    // Create notification for admin
+    const notificationsRef = ref(database, 'notifications');
+    await push(notificationsRef, {
+      type: 'return',
+      userId: currentUser.uid,
+      userName: record.userName,
+      bookId: record.bookId,
+      bookTitle: record.bookTitle,
+      recordId: recordId,
+      timestamp: returnDate,
+      read: false
+    });
+    
+    showAlert('Book returned successfully!', 'success');
     loadBorrows();
     
   } catch (error) {
-    console.error('Error requesting return:', error);
-    showAlert('Failed to request return: ' + error.message, 'error');
+    console.error('Error returning book:', error);
+    showAlert('Failed to return book: ' + error.message, 'error');
   }
 };

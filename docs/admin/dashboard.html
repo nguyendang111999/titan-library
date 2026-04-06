@@ -56,6 +56,12 @@
           <p>Awaiting approval</p>
         </div>
         
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+          <h3>Unread Notifications</h3>
+          <div class="number" id="unreadNotifications">0</div>
+          <p>Book returns</p>
+        </div>
+        
         <div class="dashboard-card danger">
           <h3>Total Users</h3>
           <div class="number" id="totalUsers">0</div>
@@ -71,6 +77,18 @@
           <div class="loading show">
             <div class="spinner"></div>
             <p>Loading activities...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-2">
+        <div class="card-header">
+          <h3>Top 5 Borrowers</h3>
+        </div>
+        <div id="leaderboard">
+          <div class="loading show">
+            <div class="spinner"></div>
+            <p>Loading leaderboard...</p>
           </div>
         </div>
       </div>
@@ -148,14 +166,28 @@
         if (borrowsSnapshot.exists()) {
           const borrows = borrowsSnapshot.val();
           pendingRequests = Object.values(borrows).filter(
-            b => b.status === 'pending_borrow' || b.status === 'pending_return'
+            b => b.status === 'pending_borrow'
           ).length;
         }
         
         document.getElementById('pendingRequests').textContent = pendingRequests;
         
+        // Load unread notifications count
+        const notificationsRef = ref(database, 'notifications');
+        const notifSnapshot = await get(notificationsRef);
+        
+        let unreadCount = 0;
+        if (notifSnapshot.exists()) {
+          const notifications = notifSnapshot.val();
+          unreadCount = Object.values(notifications).filter(n => n.type === 'return' && !n.read).length;
+        }
+        document.getElementById('unreadNotifications').textContent = unreadCount;
+        
         // Load recent activities
         loadRecentActivities(borrowsSnapshot.val());
+        
+        // Load leaderboard
+        loadLeaderboard(borrowsSnapshot.val());
         
       } catch (error) {
         console.error('Error loading dashboard data:', error);
@@ -212,7 +244,6 @@
       const badges = {
         'pending_borrow': 'warning',
         'borrowed': 'info',
-        'pending_return': 'warning',
         'returned': 'success'
       };
       return badges[status] || 'info';
@@ -220,6 +251,58 @@
 
     function formatStatus(status) {
       return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    function loadLeaderboard(borrows) {
+      const container = document.getElementById('leaderboard');
+      container.innerHTML = '';
+      
+      if (!borrows) {
+        container.innerHTML = '<p style="color: var(--secondary-color); text-align: center; padding: 2rem;">No borrow data yet</p>';
+        return;
+      }
+      
+      // Count borrows per user
+      const borrowCounts = {};
+      Object.values(borrows).forEach(record => {
+        const key = record.userId;
+        if (!borrowCounts[key]) {
+          borrowCounts[key] = { userName: record.userName, count: 0 };
+        }
+        borrowCounts[key].count++;
+      });
+      
+      // Sort by count descending, take top 5
+      const topBorrowers = Object.values(borrowCounts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      if (topBorrowers.length === 0) {
+        container.innerHTML = '<p style="color: var(--secondary-color); text-align: center; padding: 2rem;">No borrow data yet</p>';
+        return;
+      }
+      
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Total Borrows</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${topBorrowers.map((user, index) => `
+            <tr>
+              <td><strong>${index + 1}</strong></td>
+              <td>${user.userName}</td>
+              <td><span class="badge badge-info">${user.count}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+      
+      container.appendChild(table);
     }
   </script>
 </body>

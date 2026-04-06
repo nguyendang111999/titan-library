@@ -14,6 +14,10 @@
     "borrowRecords": {
       ".read": "auth != null",
       ".write": "auth != null"
+    },
+    "notifications": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      ".write": "auth != null"
     }
   }
 }

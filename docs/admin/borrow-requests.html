@@ -52,17 +52,20 @@
         <div id="borrowRequests"></div>
       </div>
 
-      <!-- Pending Return Requests -->
+      <!-- Return Notifications -->
       <div class="card">
         <div class="card-header">
-          <h3>Pending Return Requests</h3>
-          <span class="badge badge-warning" id="returnCount">0</span>
+          <h3>Return Notifications</h3>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span class="badge badge-info" id="returnCount">0</span>
+            <button class="btn btn-secondary btn-sm" id="markAllReadBtn" style="display: none;">Mark All as Read</button>
+          </div>
         </div>
         <div class="loading show" id="returnLoading">
           <div class="spinner"></div>
-          <p>Loading requests...</p>
+          <p>Loading notifications...</p>
         </div>
-        <div id="returnRequests"></div>
+        <div id="returnNotifications"></div>
       </div>
 
       <!-- Active Borrows -->

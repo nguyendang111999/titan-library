@@ -71,15 +71,15 @@ bookForm.addEventListener('submit', async (e) => {
       const existingBook = snapshot.val();
       
       // Calculate available copies based on the difference in total copies
-      const copiesDifference = bookData.totalCopies - existingBook.totalCopies;
-      bookData.availableCopies = (existingBook.availableCopies || 0) + copiesDifference;
+      const copiesDifference = bookData.totalCopies - (parseInt(existingBook.totalCopies) || 0);
+      bookData.availableCopies = (parseInt(existingBook.availableCopies) || 0) + copiesDifference;
       
       // Ensure available copies doesn't go negative
       if (bookData.availableCopies < 0) {
         bookData.availableCopies = 0;
       }
       
-      bookData.addedAt = existingBook.addedAt;
+      bookData.addedAt = existingBook.addedAt || new Date().toISOString();
       
       await set(bookRef, bookData);
       showAlert('Book updated successfully!', 'success');

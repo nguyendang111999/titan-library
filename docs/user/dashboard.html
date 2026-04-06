@@ -196,7 +196,7 @@
             if (borrow.userId === currentUser.uid) {
               if (borrow.status === 'borrowed') {
                 activeBorrows++;
-              } else if (borrow.status === 'pending_borrow' || borrow.status === 'pending_return') {
+              } else if (borrow.status === 'pending_borrow') {
                 pendingRequests++;
               }
             }
