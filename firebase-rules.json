@@ -9,7 +9,12 @@
     },
     "books": {
       ".read": "auth != null",
-      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      "$bookId": {
+        "availableCopies": {
+          ".write": "auth != null"
+        }
+      }
     },
     "borrowRecords": {
       ".read": "auth != null",
