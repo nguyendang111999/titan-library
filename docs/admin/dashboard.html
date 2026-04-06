@@ -24,6 +24,7 @@
         </nav>
         <div class="user-info">
           <span id="adminName">Admin</span>
+          <button class="btn btn-secondary" id="changePasswordBtn">Change Password</button>
           <button class="btn btn-secondary" id="logoutBtn">Logout</button>
         </div>
       </div>
@@ -106,8 +107,32 @@
     </div>
   </main>
 
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Change Password</h3>
+        <button class="close-modal" id="closePasswordModal">&times;</button>
+      </div>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" required minlength="6" placeholder="Enter new password (min 6 characters)">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" required minlength="6" placeholder="Confirm new password">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Update Password</button>
+          <button type="button" class="btn btn-secondary" id="cancelPasswordBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
-    import { checkAuth, logout } from '../js/auth.js';
+    import { checkAuth, logout, changePassword } from '../js/auth.js';
     import { database } from '../js/firebase-config.js';
     import { ref, get, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
@@ -124,6 +149,49 @@
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Change password modal
+    const changePasswordModal = document.getElementById('changePasswordModal');
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const closePasswordModal = document.getElementById('closePasswordModal');
+    const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+
+    changePasswordBtn.addEventListener('click', () => {
+      changePasswordModal.classList.add('show');
+    });
+
+    closePasswordModal.addEventListener('click', () => {
+      changePasswordModal.classList.remove('show');
+      changePasswordForm.reset();
+    });
+
+    cancelPasswordBtn.addEventListener('click', () => {
+      changePasswordModal.classList.remove('show');
+      changePasswordForm.reset();
+    });
+
+    changePasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (newPassword !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      try {
+        await changePassword(newPassword);
+        alert('Password updated successfully!');
+        changePasswordModal.classList.remove('show');
+        changePasswordForm.reset();
+      } catch (error) {
+        console.error('Change password error:', error);
+        alert('Failed to update password: ' + error.message);
+      }
+    });
 
     async function loadDashboardData() {
       try {
