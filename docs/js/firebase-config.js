@@ -28,3 +28,6 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 
 export { auth, database };
+
+// Allowed Google Workspace domain for sign-in
+export const WORKSPACE_DOMAIN = 'titanglobal.studio';

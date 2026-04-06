@@ -1,11 +1,13 @@
 // Authentication Logic
-import { auth, database } from './firebase-config.js';
+import { auth, database, WORKSPACE_DOMAIN } from './firebase-config.js';
 import { 
   signInWithEmailAndPassword, 
   signOut,
   onAuthStateChanged,
   updatePassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { ref, get, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
@@ -108,6 +110,52 @@ export async function changePassword(newPassword) {
     return { success: true };
   } catch (error) {
     console.error('Change password error:', error);
+    throw error;
+  }
+}
+
+// Google Workspace sign-in
+export async function googleSignIn() {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ hd: WORKSPACE_DOMAIN });
+
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Enforce domain restriction
+    if (!user.email.endsWith(`@${WORKSPACE_DOMAIN}`)) {
+      await signOut(auth);
+      throw new Error(`Only @${WORKSPACE_DOMAIN} accounts are allowed.`);
+    }
+
+    // Check if user already exists in DB
+    const userRef = ref(database, `users/${user.uid}`);
+    const snapshot = await get(userRef);
+
+    if (!snapshot.exists()) {
+      // Auto-create as 'user' role on first login
+      await set(userRef, {
+        username: user.displayName || user.email.split('@')[0],
+        email: user.email,
+        role: 'user',
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    const userData = (await get(userRef)).val();
+    return { success: true, role: userData.role, user };
+  } catch (error) {
+    // Sign out if anything went wrong after auth
+    if (auth.currentUser) {
+      await signOut(auth);
+    }
+    if (error.code === 'auth/popup-blocked') {
+      throw new Error('Popup was blocked. Please allow popups for this site and try again.');
+    }
+    if (error.code === 'auth/popup-closed-by-user') {
+      throw new Error('Sign-in was cancelled.');
+    }
     throw error;
   }
 }
