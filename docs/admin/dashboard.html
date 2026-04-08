@@ -39,31 +39,31 @@
       </div>
 
       <div class="admin-dashboard">
-        <div class="dashboard-card">
+        <div class="dashboard-card" onclick="window.location.href='books.html'" style="cursor: pointer;">
           <h3>Total Books</h3>
           <div class="number" id="totalBooks">0</div>
           <p>Books in library</p>
         </div>
         
-        <div class="dashboard-card success">
+        <div class="dashboard-card success" onclick="window.location.href='books.html'" style="cursor: pointer;">
           <h3>Available Books</h3>
           <div class="number" id="availableBooks">0</div>
           <p>Ready to borrow</p>
         </div>
         
-        <div class="dashboard-card warning">
+        <div class="dashboard-card warning" onclick="window.location.href='borrow-requests.html'" style="cursor: pointer;">
           <h3>Pending Requests</h3>
           <div class="number" id="pendingRequests">0</div>
           <p>Awaiting approval</p>
         </div>
         
-        <div class="dashboard-card" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+        <div class="dashboard-card" onclick="window.location.href='borrow-requests.html'" style="background: linear-gradient(135deg, #6366f1, #4f46e5); cursor: pointer;">
           <h3>Unread Notifications</h3>
           <div class="number" id="unreadNotifications">0</div>
           <p>Book returns</p>
         </div>
         
-        <div class="dashboard-card danger">
+        <div class="dashboard-card danger" onclick="window.location.href='users.html'" style="cursor: pointer;">
           <h3>Total Users</h3>
           <div class="number" id="totalUsers">0</div>
           <p>Registered members</p>
