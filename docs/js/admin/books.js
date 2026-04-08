@@ -27,11 +27,29 @@ const cancelBtn = document.getElementById('cancelBtn');
 const bookForm = document.getElementById('bookForm');
 const alertDiv = document.getElementById('alert');
 const modalTitle = document.getElementById('modalTitle');
+const coverImageInput = document.getElementById('coverImage');
+const coverImagePreview = document.getElementById('coverImagePreview');
+const coverPreviewImg = document.getElementById('coverPreviewImg');
+
+// Live preview of cover image URL
+coverImageInput.addEventListener('input', () => {
+  const url = coverImageInput.value.trim();
+  if (url) {
+    coverPreviewImg.src = url;
+    coverImagePreview.style.display = 'block';
+    coverPreviewImg.onerror = () => {
+      coverImagePreview.style.display = 'none';
+    };
+  } else {
+    coverImagePreview.style.display = 'none';
+  }
+});
 
 addBookBtn.addEventListener('click', () => {
   editingBookId = null;
   modalTitle.textContent = 'Add New Book';
   bookForm.reset();
+  coverImagePreview.style.display = 'none';
   modal.classList.add('show');
 });
 
@@ -230,6 +248,14 @@ window.editBook = async function(bookId) {
       document.getElementById('totalCopies').value = book.totalCopies;
       document.getElementById('description').value = book.description || '';
       document.getElementById('coverImage').value = book.coverImage || '';
+      
+      // Show cover image preview if URL exists
+      if (book.coverImage) {
+        coverPreviewImg.src = book.coverImage;
+        coverImagePreview.style.display = 'block';
+      } else {
+        coverImagePreview.style.display = 'none';
+      }
       
       modalTitle.textContent = 'Edit Book';
       modal.classList.add('show');

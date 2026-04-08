@@ -94,7 +94,7 @@ function renderBooks(books) {
   
   booksGrid.innerHTML = books.map(book => `
     <div class="card">
-      ${book.coverImage ? `<img src="${book.coverImage}" alt="${book.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 0.375rem; margin-bottom: 1rem;">` : ''}
+      ${book.coverImage ? `<div class="book-cover"><img src="${book.coverImage}" alt="${book.title}"></div>` : ''}
       <h4 style="margin-bottom: 0.5rem;">${book.title}</h4>
       <p style="color: var(--secondary-color); margin-bottom: 0.5rem;"><strong>Author:</strong> ${book.author}</p>
       <p style="color: var(--secondary-color); margin-bottom: 0.5rem;"><strong>Category:</strong> <span class="badge badge-info">${book.category}</span></p>
